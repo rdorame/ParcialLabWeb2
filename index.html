@@ -45,9 +45,7 @@
 	<link href='https://fonts.googleapis.com/css?family=Montserrat:700,400' rel='stylesheet' type='text/css'>
 	<script type="text/javascript">
 		function getData() {
-
 			sessionStorage.empresa = "kubeet";
-
 			jQuery.support.cors = true;
 			try {
 				$.ajax({
@@ -78,15 +76,21 @@
 								"</div>"
 							$("#divTeam").append(nombre);
 						});
-
 					}
 				});
-
 			} catch (e) {
 				alert("error : " + e);
 			}
 		}
 	</script>
+
+	<style>
+       #map {
+        height: 400px;
+        width: 100%;
+       }
+    </style>
+
 
 </head>
 
@@ -341,7 +345,6 @@
 	<section id="portfolio" class="parallax-section">
 		<div class="container">
 			<div class="row">
-
 				<!-- Section title
 			==================================================
 				<div class="col-md-12 col-sm-12 text-center">
@@ -349,7 +352,6 @@
 						<h5>MY PORTFOLIO</h5>
 					</div>
 				</div>
-
 				<div class="col-md-4 col-sm-4">
 					<div class="portfolio-des">
 						<a href="images/portfolio-img1.jpg" data-lightbox-gallery="portfolio-gallery"><img src="images/portfolio-img1.jpg" alt="portfolio img"></a>
@@ -380,8 +382,6 @@
 						<a href="images/portfolio-img6.jpg" data-lightbox-gallery="portfolio-gallery"><img src="images/portfolio-img6.jpg" alt="portfolio img"></a>
 					</div>
 				</div>
-
-
 			</div>
 		</div>
 	</section>
@@ -499,8 +499,25 @@
 
 	<!-- MAPA DE EMPRESAS -->
 	<div class="empresas">
-		<div id="map-canvas">
-				MAPA DE EMPRESAS
+		<div id="map">
+			<h3>Our customers</h3>
+			<script>
+      function initMap() {
+        var uluru = {lat: -25.363, lng: 131.044};
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 4,
+          center: uluru
+        });
+        var marker = new google.maps.Marker({
+          position: uluru,
+          map: map
+        });
+      }
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC1AOo--UTln1OgvwydDfNNTt1dup2y9gk&callback=initMap">
+    </script>
+
 		</div>
 	</div>
 
