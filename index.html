@@ -88,6 +88,14 @@
 		}
 	</script>
 
+	<style>
+       #map {
+        height: 400px;
+        width: 100%;
+       }
+    </style>
+
+
 </head>
 
 <body onload="getData()" data-spy="scroll" data-target=".navbar-collapse" data-offset="50">
@@ -499,8 +507,25 @@
 
 	<!-- MAPA DE EMPRESAS -->
 	<div class="empresas">
-		<div id="map-canvas">
-				MAPA DE EMPRESAS
+		<div id="map">
+			<h3>Our customers</h3>
+			<script>
+      function initMap() {
+        var uluru = {lat: -25.363, lng: 131.044};
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 4,
+          center: uluru
+        });
+        var marker = new google.maps.Marker({
+          position: uluru,
+          map: map
+        });
+      }
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC1AOo--UTln1OgvwydDfNNTt1dup2y9gk&callback=initMap">
+    </script>
+
 		</div>
 	</div>
 
