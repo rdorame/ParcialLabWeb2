@@ -1,0 +1,168 @@
+<html>
+
+<head>
+    <title>
+        Registro de tickets
+    </title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+    <script>
+        function TicketObject(folio, fecha, total, items, qty, facturado) {
+            this.folio = folio;
+            this.fecha = fecha;
+            this.total = total;
+            this.items = items;
+            this.qty = qty;
+            this.facturado = facturado;
+            this.token = sessionStorage.token;
+            this.toJsonString = function() {
+                return JSON.stringify(this);
+            };
+
+        };
+
+        function addTicket() {
+            try {
+                alert("token : " + sessionStorage.token);
+
+                var myData = new TicketObject(
+                    $("#folio").val(),
+                    $("#fecha").val(),
+                    $("#total").val(),
+                    $("#items").val(),
+                    $("#qty").val(),
+                    $("#facturado").val()
+                );
+                alert(myData.toJsonString());
+
+                jQuery.ajax({
+                    type: "POST",
+                    url: "http://localhost:8080/_ah/api/ticket_api/v1/ticket/insert",
+                    data: myData.toJsonString(),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function(response) {
+                        // do something
+                        alert(response.code + " " + response.message);
+                    },
+
+                    error: function(error) {
+                        // error handler
+                        alert("error :" + error.message)
+                    }
+
+                });
+
+            } catch (error) {
+                alert(error);
+            }
+
+        }
+
+
+        function TokenObject() {
+
+            this.tokenint = sessionStorage.token;
+            this.toJsonString = function() {
+                return JSON.stringify(this);
+            };
+
+        };
+
+
+        function getTicketList() {
+            try {
+
+
+                //alert("token : " + sessionStorage.token);
+
+                var myData = new TokenObject();
+
+                alert(myData.toJsonString());
+
+                jQuery.ajax({
+                    type: "POST",
+                    url: "http://localhost:8080/_ah/api/ticket_api/v1/ticket/list",
+                    data: myData.toJsonString(),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function(response) {
+                        // do something
+
+                        alert(response.data);
+                    },
+
+                    error: function(error) {
+                        // error handler
+                        alert("error :" + error.message)
+                    }
+
+                });
+
+            } catch (error) {
+                alert(error);
+            }
+
+        }
+
+        function uploadDemo()
+
+        {
+
+            var file_data = $("#uploaded_file").prop("files")[0];
+            var form_data = new FormData();
+            form_data.append("uploaded_file", file_data)
+
+            jQuery.support.cors = true;
+            try {
+                $.ajax({
+                    url: "http://localhost:8080/up",
+                    dataType: 'text',
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    data: form_data,
+                    type: 'post',
+                    crossDomain: true,
+                    success: function(response) {
+
+                        document.getElementById("preview").src = response;
+
+                        sessionStorage.urlImage = response;
+
+                        document.getElementById("url_photo").value = response;
+                    }
+                });
+            } catch (e) {
+                alert("error : " + e);
+            }
+        }
+    </script>
+
+</head>
+
+<body>
+
+
+    <h1> Registro de tickets</h1>
+
+    <input type="number" id="folio" value="" placeholder="No. Folio" /> <br>
+    <input type="date" id="fecha" value="" placeholder="Fecha" />
+    <input type="number" id="total" value="" placeholder="Total" />
+    <input type="text" id="items" value="" placeholder="Artículos" />
+    <input type="number" id="qty" value="" placeholder="Cantidad de artículos" />
+    <input type="text" id="facturado" value="" placeholder="Facturado" />
+
+    <br>
+    <button onclick="addTicket()"> Registrar ticket </button>
+
+    <br>
+    <br>
+
+    <button onclick="getTicketList()"> Obtener Lista </button>
+
+
+</body>
+
+</html>

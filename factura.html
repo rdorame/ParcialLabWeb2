@@ -1,0 +1,198 @@
+<html>
+
+<head>
+    <title>
+        Faturación
+    </title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+    <script>
+        // contact
+        function FacturaObject(tipoDePersona, nombre, rfc, pais, estado, municipio, colonia, cp, calle, numExt, numInt, email, numFolio, fecha, idTicket) {
+            this.tipoDePersona = tipoDePersona;
+            this.nombre = nombre;
+            this.rfc = rfc;
+            this.pais = pais;
+            this.estado = estado;
+            this.municipio = municipio;
+            this.colonia = colonia;
+            this.cp = cp;
+            this.calle = calle;
+            this.numExt = numExt;
+            this.numInt = numInt;
+            this.email = email;
+            this.numFolio = numFolio;
+            this.fecha = fecha;
+            this.idTicket = idTicket;
+            this.token = sessionStorage.token;
+            this.toJsonString = function() {
+                return JSON.stringify(this);
+            };
+
+        };
+
+
+        function addFactura() {
+            try {
+                alert("token : " + sessionStorage.token);
+
+                var myData = new FacturaObject(
+                    $("#tipoDePersona").val(),
+                    $("#nombre").val(),
+                    $("#rfc").val(),
+                    $("#pais").val(),
+                    $("#estado").val(),
+                    $("#municipio").val(),
+                    $("#colonia").val(),
+                    $("#cp").val(),
+                    $("#calle").val(),
+                    $("#numExt").val(),
+                    $("#numInt").val(),
+                    $("#email").val(),
+                    $("#numFolio").val(),
+                    $("#fecha").val(),
+                    $("#idTicket").val()
+                );
+                alert(myData.toJsonString());
+
+                jQuery.ajax({
+                    type: "POST",
+                    url: "http://localhost:8080/_ah/api/factura_api/v1/factura/insert",
+                    data: myData.toJsonString(),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function(response) {
+                        // do something
+                        alert(response.code + " " + response.message);
+                    },
+
+                    error: function(error) {
+                        // error handler
+                        alert("error :" + error.message)
+                    }
+
+                });
+
+            } catch (error) {
+                alert(error);
+            }
+
+        }
+
+
+        function TokenObject() {
+
+            this.tokenint = sessionStorage.token;
+            this.toJsonString = function() {
+                return JSON.stringify(this);
+            };
+
+        };
+
+
+        function getFacturaList() {
+            try {
+
+
+                //alert("token : " + sessionStorage.token);
+
+                var myData = new TokenObject();
+
+                alert(myData.toJsonString());
+
+                jQuery.ajax({
+                    type: "POST",
+                    url: "http://localhost:8080/_ah/api/factura_api/v1/factura/list",
+                    data: myData.toJsonString(),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function(response) {
+                        // do something
+
+                        alert(response.data);
+                    },
+
+                    error: function(error) {
+                        // error handler
+                        alert("error :" + error.message)
+                    }
+
+                });
+
+            } catch (error) {
+                alert(error);
+            }
+
+        }
+
+        function uploadDemo()
+
+        {
+
+            var file_data = $("#uploaded_file").prop("files")[0];
+            var form_data = new FormData();
+            form_data.append("uploaded_file", file_data)
+
+            jQuery.support.cors = true;
+            try {
+                $.ajax({
+                    url: "http://localhost:8080/up",
+                    dataType: 'text',
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    data: form_data,
+                    type: 'post',
+                    crossDomain: true,
+                    success: function(response) {
+
+                        document.getElementById("preview").src = response;
+
+                        sessionStorage.urlImage = response;
+
+                        document.getElementById("url_photo").value = response;
+                    }
+                });
+            } catch (e) {
+                alert("error : " + e);
+            }
+        }
+    </script>
+
+</head>
+
+<body>
+
+
+    <h1> Facturación</h1>
+
+    <input type="text" id="tipoDePersona" value="" placeholder="Tipo de persona" /> <br>
+    <input type="text" id="nombre" value="" placeholder="Nombre" />
+    <input type="text" id="rfc" value="" placeholder="R.F.C." />
+    <input type="text" id="pais" value="" placeholder="País" />
+    <input type="text" id="estado" value="" placeholder="Estado" />
+    <input type="text" id="municipio" value="" placeholder="Municipio" />
+    <input type="text" id="colonia" value="" placeholder="Colonia" />
+    <input type="number" id="cp" value="" placeholder="C.P." />
+    <input type="text" id="calle" value="" placeholder="Calle" />
+    <input type="number" id="numExt" value="" placeholder="Número exterior" />
+    <input type="number" id="numInt" value="" placeholder="Número interior" />
+    <input type="email" id="email" value="" placeholder="Correo electrónico" />
+    <input type="number" id="numFolio" value="" placeholder="Folio" />
+    <input type="date" id="fecha" value="" placeholder="Fecha" />
+    <input type="number" id="idTicket" value="" placeholder="No. Ticket" />
+
+
+    <br>
+    <button onclick="addFactura()"> Guardar factura </button>
+
+    <br>
+    <br>
+
+    <button onclick="getFacturaList()"> Obtener Lista </button>
+
+
+</body>
+
+</html>

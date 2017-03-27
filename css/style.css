@@ -99,11 +99,16 @@ p {
 }
 
 #about, #team, #service, #portfolio, #download,
-#price, #testimonial, #contact {
+#price, #testimonial, #contact, #empresas {
    padding-top: 140px;
   padding-bottom: 120px;
 }
 
+#map {
+	height: 300px;
+	width: 70%;
+	float: right;
+}
 #team .col-md-3, #price {
   text-align: center;
 }
@@ -214,7 +219,7 @@ p {
     border-color: transparent;
   }
 .navbar-default .navbar-toggle:hover,
-.navbar-default .navbar-toggle:focus { 
+.navbar-default .navbar-toggle:focus {
   background-color: transparent;
 }
 
@@ -384,7 +389,7 @@ p {
     border: 2px solid transparent;
     padding: 72px 32px 62px 32px;
     transition: all 0.4s ease-in-out;
-} 
+}
 
 #price .price-plan-default {
   border: 2px solid #111112;
@@ -566,4 +571,3 @@ footer #map-canvas  {
     padding-top: 32px;
   }
 }
-

@@ -10,7 +10,7 @@
 <script>
 // contact
 function TeamObject(myNombre, myPuesto) {
-    
+
     this.nombre = myNombre;
     this.puesto = myPuesto;
     this.token = sessionStorage.token;
@@ -29,8 +29,8 @@ function addTeamDemo()
     alert("token : " + sessionStorage.token);
 
   	var myData = new TeamObject(
-     $("#nombre").val(), 
-     $("#puesto").val() 
+     $("#nombre").val(),
+     $("#puesto").val()
      );
   	alert(myData.toJsonString());
 
@@ -44,8 +44,8 @@ function addTeamDemo()
                 // do something
                 alert (response.code + " " + response.message);
            },
-       
-           error: function (error) {            
+
+           error: function (error) {
                 // error handler
                 alert("error :" + error.message)
            }
@@ -62,7 +62,7 @@ function addTeamDemo()
 
 
 function TokenObject() {
-    
+
     this.tokenint = sessionStorage.token;
     this.toJsonString = function () { return JSON.stringify(this); };
 
@@ -78,7 +78,7 @@ function getTeamList()
     //alert("token : " + sessionStorage.token);
 
     var myData = new TokenObject();
-    
+
     alert(myData.toJsonString());
 
      jQuery.ajax({
@@ -89,11 +89,11 @@ function getTeamList()
            dataType: "json",
            success: function (response) {
                 // do something
-                
+
                 alert (response.data);
            },
-       
-           error: function (error) {            
+
+           error: function (error) {
                 // error handler
                 alert("error :" + error.message)
            }
@@ -167,12 +167,12 @@ puesto: <input type="text" id="puesto" value="CEO" />
 
 
 <br>
-<button onclick="addTeamDemo()"> Guardar </button> 
+<button onclick="addTeamDemo()"> Guardar </button>
 
 <br>
 <br>
 
-<button onclick="getTeamList()"> Obtener Lista </button> 
+<button onclick="getTeamList()"> Obtener Lista </button>
 
 
 </body>

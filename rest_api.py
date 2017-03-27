@@ -8,17 +8,18 @@ import time
 
 from CustomExceptions import NotFoundException
 
-from messages import EmailPasswordMessage, TokenMessage, CodeMessage, Token, TokenKey,MessageNone
+from messages import EmailPasswordMessage, TokenMessage, CodeMessage, Token, TokenKey, MessageNone
 from messages import EmpresaInput, EmpresaUpdate, EmpresaList
 from messages import TeamInput, TeamUpdate, TeamList
 from messages import FacturaInput, FacturaUpdate, FacturaList
+from messages import TicketInput, TicketUpdate, TicketList
 from messages import UserInput, UserUpdate, UserList
 
 from endpoints_proto_datastore.ndb import EndpointsModel
 
 import models
 from models import validarEmail
-from models import Empresa, Usuarios, Team, Factura
+from models import Empresa, Usuarios, Team, Factura, Ticket
 
 ###############
 # Usuarios
@@ -171,7 +172,6 @@ class EmpresasApi(remote.Service):
 
 
 # get one
-
  @endpoints.method(TokenKey, EmpresaList, path='empresa/get', http_method='POST', name='empresa.get')
 #siempre lleva cls y request
  def empresa_get(cls, request):
@@ -186,15 +186,16 @@ class EmpresasApi(remote.Service):
    message = EmpresaList(code=1, data = [EmpresaUpdate(token='Succesfully get',
     entityKey = empresaentity.get().entityKey,
     codigo_empresa=empresaentity.get().codigo_empresa,
-    nombre_empresa = empresaentity.get().nombre_empresa)])
+    nombre_empresa = empresaentity.get().nombre_empresa,
+    lat_empresa = empresaentity.get().lat_empresa,
+    long_empresa = empresaentity.get().long_empresa
+    )])
 
   except jwt.DecodeError:
    message = EmpresaList(code=-1, data=[])
   except jwt.ExpiredSignatureError:
    message = EmpresaList(code=-2, data=[])
   return message
-
-
 
 
  @endpoints.method(TokenKey, CodeMessage, path='empresa/delete', http_method='POST', name='empresa.delete')
@@ -281,7 +282,9 @@ class EmpresasApi(remote.Service):
     lista.append(EmpresaUpdate(token='',
      entityKey = i.entityKey,
      codigo_empresa=i.codigo_empresa,
-     nombre_empresa = i.nombre_empresa))
+     nombre_empresa = i.nombre_empresa,
+     lat_empresa = i.lat_empresa,
+     long_empresa = i.long_empresa))
 
    lstMessage.data = lista #ASIGNA a la salida la lista
    message = lstMessage
@@ -435,7 +438,21 @@ class FacturaApi(remote.Service):
     entityKey=facturaentity.get().entityKey,
     #empresa_key=teamentity.get().empresa_key.urlsafe(),
     tipoDePersona=facturaentity.get().tipoDePersona,
-    nombre=facturaentity.get().nombre)])
+    nombre=facturaentity.get().nombre,
+    idTicket = facturaentity.get().idTicket,
+    rfc = facturaentity.get().rfc,
+    pais = facturaentity.get().pais,
+    estado = facturaentity.get().estado,
+    municipio = facturaentity.get().municipio,
+    colonia = facturaentity.get().colonia,
+    cp = facturaentity.get().cp,
+    calle = facturaentity.get().calle,
+    numExt = facturaentity.get().numExt,
+    numInt = facturaentity.get().numInt,
+    email = facturaentity.get().email,
+    numFolio = facturaentity.get().numFolio,
+    fecha = facturaentity.get().fecha
+    )])
   except jwt.DecodeError:
    message = FacturaList(code=-1, data=[])
   except jwt.ExpiredSignatureError:
@@ -477,7 +494,21 @@ class FacturaApi(remote.Service):
      entityKey=i.entityKey,
      #empresa_key=i.empresa_key.urlsafe(),
      tipoDePersona=i.tipoDePersona,
-     nombre=i.nombre))
+     nombre=i.nombre,
+     idTicket = i.idTicket,
+     rfc = i.rfc,
+     pais = i.pais,
+     estado = i.estado,
+     municipio = i.municipio,
+     colonia = i.colonia,
+     cp = i.cp,
+     calle = i.calle,
+     numExt = i.numExt,
+     numInt = i.numInt,
+     email = i.email,
+     numFolio = i.numFolio,
+     fecha = i.fecha
+     ))
    lstMessage.data = lista #ASIGNA a la salida la lista
    message = lstMessage
   except jwt.DecodeError:
@@ -501,7 +532,7 @@ class FacturaApi(remote.Service):
     codigo=-3
           #la funcion josue_m puede actualizar e insertar
           #depende de la ENTRADA de este endpoint method
-   message = CodeMessage(code=codigo, message='Su r.h. se ha sido registrado exitosamente')
+   message = CodeMessage(code=codigo, message='Factura registrada con exito')
   except jwt.DecodeError:
    message = CodeMessage(code=-2, message='Invalid token')
   except jwt.ExpiredSignatureError:
@@ -531,5 +562,133 @@ class FacturaApi(remote.Service):
    message = CodeMessage(code=-1, message='Token expired')
   return message
 
+###########################
+#### Tickets
+###########################
 
-application = endpoints.api_server([UsuariosApi, EmpresasApi, TeamApi, FacturaApi], restricted=False)
+@endpoints.api(name='ticket_api', version='v1', description='ticket REST API')
+class TicketApi(remote.Service):
+# get one
+#                   ENTRADA    SALIDA        RUTA              siempre es POST     NOMBRE
+ @endpoints.method(TokenKey, TicketList, path='ticket/get', http_method='POST', name='ticket.get')
+#siempre lleva cls y request
+ def ticket_get(cls, request):
+  try:
+   token = jwt.decode(request.tokenint, 'secret')#CHECA EL TOKEN
+      #Obtiene el elemento dado el entityKey
+   ticketentity = ndb.Key(urlsafe=request.entityKey)
+      #CREA LA SALIDA de tipo JosueInput y le asigna los valores, es a como se declaro en el messages.py
+      #josuentity.get().empresa_key.urlsafe() para poder optener el EntityKey
+   message = TicketList(code=1, data=[TicketUpdate(token='Succesfully get',
+    entityKey=ticketentity.get().entityKey,
+    #empresa_key=teamentity.get().empresa_key.urlsafe(),
+    folio=ticketentity.get().folio,
+    fecha=ticketentity.get().fecha,
+    total=ticketentity.get().total,
+    items=ticketentity.get().items,
+    qty=ticketentity.get().qty,
+    facturado=ticketentity.get().facturado
+    )])
+  except jwt.DecodeError:
+   message = TicketList(code=-1, data=[])
+  except jwt.ExpiredSignatureError:
+   message = TicketList(code=-2, data=[])
+  return message
+
+# delete
+#                   ENTRADA    SALIDA        RUTA              siempre es POST     NOMBRE
+ @endpoints.method(TokenKey, CodeMessage, path='ticket/delete', http_method='POST', name='ticket.delete')
+#siempre lleva cls y request
+ def ticket_remove(cls, request):
+  try:
+   token = jwt.decode(request.tokenint, 'secret')#CHECA EL TOKEN
+   ticketentity = ndb.Key(urlsafe=request.entityKey)#Obtiene el elemento dado el EntitKey
+   ticketentity.delete()#BORRA
+   message = CodeMessage(code=0, message='Se ha eliminado el r.h.')
+  except jwt.DecodeError:
+   message = CodeMessage(code=-2, message='Invalid token')
+  except jwt.ExpiredSignatureError:
+   message = CodeMessage(code=-1, message='Token expired')
+  return message
+
+# list
+#                   ENTRADA    SALIDA        RUTA              siempre es POST     NOMBRE
+ @endpoints.method(Token, TicketList, path='ticket/list', http_method='POST', name='ticket.list')
+#siempre lleva cls y request
+ def ticket_list(cls, request):
+  try:
+   token = jwt.decode(request.tokenint, 'secret')#CHECA EL TOKEN
+   user = Usuarios.get_by_id(token['user_id']) #obtiene usuario dado el token
+   lista = [] #crea lista para guardar contenido de la BD
+   lstMessage = TicketList(code=1) #CREA el mensaje de salida
+   lstBd = Ticket.query().fetch() #obtiene de la base de datos
+   for i in lstBd: #recorre la base de datos
+    #inserta a la lista creada con los elementos que se necesiten de la base de datos
+    #i.empresa_key.urlsafe() obtiene el entityKey
+
+    lista.append(TicketUpdate(token='',
+     entityKey=i.entityKey,
+     #empresa_key=i.empresa_key.urlsafe(),
+     folio=i.folio,
+     fecha=i.fecha,
+     total=i.total,
+     items=i.items,
+     qty=i.qty,
+     facturado=i.facturado
+     ))
+   lstMessage.data = lista #ASIGNA a la salida la lista
+   message = lstMessage
+  except jwt.DecodeError:
+   message = TicketList(code=-1, data=[])
+  except jwt.ExpiredSignatureError:
+   message = TicketList(code=-2, data=[])
+  return message
+
+# insert
+#                   ENTRADA    SALIDA        RUTA              siempre es POST     NOMBRE
+ @endpoints.method(TicketInput, CodeMessage, path='ticket/insert', http_method='POST', name='ticket.insert')
+#siempre lleva cls y request
+ def ticket_add(cls, request):
+  try:
+   token = jwt.decode(request.token, 'secret')#CHECA EL TOKEN
+   user = Usuarios.get_by_id(token['user_id']) #obtiene el usuario para poder acceder a los metodos declarados en models.py en la seccion de
+   myticket = Ticket()
+   if myticket.ticket_m(request, user.empresa_key)==0:#llama a la funcion declarada en models.py en la seccion de USUARIOS
+    codigo=1
+   else:
+    codigo=-3
+          #la funcion josue_m puede actualizar e insertar
+          #depende de la ENTRADA de este endpoint method
+   message = CodeMessage(code=codigo, message='Ticket registrado')
+  except jwt.DecodeError:
+   message = CodeMessage(code=-2, message='Invalid token')
+  except jwt.ExpiredSignatureError:
+   message = CodeMessage(code=-1, message='Token expired')
+  return message
+
+# update
+#                   ENTRADA    SALIDA        RUTA              siempre es POST     NOMBRE
+ @endpoints.method(TicketUpdate, CodeMessage, path='ticket/update', http_method='POST', name='ticket.update')
+#siempre lleva cls y request
+ def ticket_update(cls, request):
+  try:
+   token = jwt.decode(request.token, 'secret')#CHECA EL TOKEN
+   user = Usuarios.get_by_id(token['user_id'])#obtiene el usuario para poder acceder a los metodos declarados en models.py en la seccion de USUARIOS
+   empresakey = ndb.Key(urlsafe=user.empresa_key.urlsafe())#convierte el string dado a entityKey
+   myticket = Ticket()
+   if myticket.ticket_m(request, empresakey)==0:#llama a la funcion declarada en models.py en la seccion de USUARIOS
+    codigo=1
+   else:
+    codigo=-3
+      #la funcion josue_m puede actualizar e insertar
+      #depende de la ENTRADA de este endpoint method
+   message = CodeMessage(code=1, message='Sus cambios han sido guardados exitosamente')
+  except jwt.DecodeError:
+   message = CodeMessage(code=-2, message='Invalid token')
+  except jwt.ExpiredSignatureError:
+   message = CodeMessage(code=-1, message='Token expired')
+  return message
+
+
+
+application = endpoints.api_server([UsuariosApi, EmpresasApi, TeamApi, FacturaApi, TicketApi], restricted=False)

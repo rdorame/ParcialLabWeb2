@@ -18,9 +18,11 @@ class CustomBaseModel(EndpointsModel):
 
 ## empresa
 class Empresa(CustomBaseModel):
-    _message_fields_schema = ('entityKey', 'codigo_empresa', 'nombre_empresa')
+    _message_fields_schema = ('entityKey', 'codigo_empresa', 'nombre_empresa', 'lat_empresa', 'long_empresa')
     codigo_empresa = ndb.StringProperty()
     nombre_empresa = ndb.StringProperty()
+    lat_empresa = ndb.FloatProperty()
+    long_empresa = ndb.FloatProperty()
 
        ###Empresa####
     def empresa_m(self, data):
@@ -121,24 +123,24 @@ class Team(CustomBaseModel):
 ######### Factura #########
 
 class Factura(CustomBaseModel):
-    _message_fields_schema = ('entityKey', 'tipoDePersona', 'nombre')#, 'rfc', 'pais', 'estado', 'municipio', 'colonia', 'cp', 'calle', 'numExt', 'numInt', 'email', 'numFolio', 'fecha', 'total')
+    _message_fields_schema = ('entityKey', 'tipoDePersona', 'nombre', 'rfc', 'pais', 'estado', 'municipio', 'colonia', 'cp', 'calle', 'numExt', 'numInt', 'email', 'numFolio', 'fecha', 'idTicket')
     empresa_key = ndb.KeyProperty(kind=Empresa)
     tipoDePersona = ndb.StringProperty()
     nombre = ndb.StringProperty()
-    """rfc = ndb.StringProperty()
+    rfc = ndb.StringProperty()
     pais = ndb.StringProperty()
     estado = ndb.StringProperty()
     municipio = ndb.StringProperty()
     colonia = ndb.StringProperty()
-    cp = ndb.StringProperty()
+    cp = ndb.IntegerProperty()
     calle = ndb.StringProperty()
-    numExt = ndb.StringProperty()
-    numInt = ndb.StringProperty()
+    numExt = ndb.IntegerProperty()
+    numInt = ndb.IntegerProperty()
     email = ndb.StringProperty()
-    numFolio = ndb.StringProperty()
+    numFolio = ndb.IntegerProperty()
     fecha = ndb.StringProperty()
-    total = ndb.StringProperty()
-    """
+    idTicket = ndb.IntegerProperty()
+
 
     ### Factura ####
     def factura_m(self, data, empresakey):
@@ -146,4 +148,25 @@ class Factura(CustomBaseModel):
         factura.populate(data)#Llena la variables con los datos dados por el request en main.py
         factura.empresa_key=empresakey#inserta el entityKey de la empresa que es un parametro que se manda en main.py
         factura.put()#inserta o hace un update depende del main.py
+        return 0
+
+######### Ticket #########
+
+class Ticket(CustomBaseModel):
+    _message_fields_schema = ('entityKey', 'folio', 'fecha', 'total', 'items', 'qty', 'facturado')
+    empresa_key = ndb.KeyProperty(kind=Empresa)
+    folio = ndb.IntegerProperty()
+    fecha = ndb.StringProperty()
+    total = ndb.FloatProperty()
+    items = ndb.StringProperty()
+    qty = ndb.IntegerProperty()
+    facturado = ndb.StringProperty()
+
+
+    ### Ticket ####
+    def ticket_m(self, data, empresakey):
+        ticket = Ticket()#Crea una variable de tipo Base de datos
+        ticket.populate(data)#Llena la variables con los datos dados por el request en main.py
+        ticket.empresa_key=empresakey#inserta el entityKey de la empresa que es un parametro que se manda en main.py
+        ticket.put()#inserta o hace un update depende del main.py
         return 0

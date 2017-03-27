@@ -12,6 +12,8 @@ import jinja2
 
 from models import Empresa
 from models import Team
+from models import Factura
+from models import Ticket
 
 jinja_env = jinja2.Environment(
  loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
@@ -32,8 +34,8 @@ class GetTeamHandler(webapp2.RequestHandler):
 
      id_empresa = self.request.get('empresa')
      objemp = Empresa.query(Empresa.codigo_empresa == id_empresa).get()
-     strKey = objemp.key.urlsafe() 
-     myEmpKey = ndb.Key(urlsafe=strKey) 
+     strKey = objemp.key.urlsafe()
+     myEmpKey = ndb.Key(urlsafe=strKey)
      myTeam = Team.query(Team.empresa_key == myEmpKey)
 
      myList = []
@@ -43,18 +45,18 @@ class GetTeamHandler(webapp2.RequestHandler):
       myObj.puesto = i.puesto
       myObj.urlImage = i.urlImage
       myList.append(myObj)
-       
+
      json_string = json.dumps(myList, default=MyClass)
      self.response.write(json_string)
 
 
 
-###########################################################################     
+###########################################################################
 
 
 class UpHandler(webapp2.RequestHandler):
     def _get_urls_for(self, file_name):
-        
+
      bucket_name = app_identity.get_default_gcs_bucket_name()
      path = os.path.join('/', bucket_name, file_name)
      real_path = '/gs' + path
@@ -120,6 +122,36 @@ class AdminHandler(webapp2.RequestHandler):
     template = jinja_env.get_template(template_name)
     return template.render(context)
 
+class FacturaHandler(webapp2.RequestHandler):
+
+   def get(self):
+
+    template_context = {}
+    self.response.out.write(
+      self._render_template('factura.html', template_context))
+
+   def _render_template(self, template_name, context=None):
+    if context is None:
+     context = {}
+
+    template = jinja_env.get_template(template_name)
+    return template.render(context)
+
+class TicketHandler(webapp2.RequestHandler):
+
+   def get(self):
+
+    template_context = {}
+    self.response.out.write(
+      self._render_template('ticket.html', template_context))
+
+   def _render_template(self, template_name, context=None):
+    if context is None:
+     context = {}
+
+    template = jinja_env.get_template(template_name)
+    return template.render(context)
+
 
 class MainHandler(webapp2.RequestHandler):
 
@@ -140,6 +172,8 @@ class MainHandler(webapp2.RequestHandler):
 app = webapp2.WSGIApplication([
     ('/', MainHandler),
     ('/login', LoginHandler),
+    ('/facturacion', FacturaHandler),
+    ('/tickets', TicketHandler),
     ('/admin', AdminHandler),
     ('/up', UpHandler),
     ('/getteam', GetTeamHandler),

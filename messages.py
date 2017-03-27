@@ -49,14 +49,18 @@ class UserList(messages.Message):
 class EmpresaInput(messages.Message):
     token = messages.StringField(1, required=True)
     codigo_empresa = messages.StringField(2)
-    nombre_empresa = messages.StringField(3)
 
+    nombre_empresa = messages.StringField(3)
+    lat_empresa = messages.FloatField(4)
+    long_empresa = messages.FloatField(5)
 
 class EmpresaUpdate(messages.Message):
     token = messages.StringField(1, required=True)
     entityKey = messages.StringField(2, required=True)
     codigo_empresa = messages.StringField(3)
     nombre_empresa = messages.StringField(4)
+    lat_empresa = messages.FloatField(5)
+    long_empresa = messages.FloatField(6)
 
 
 
@@ -112,48 +116,71 @@ class CodeMessage(messages.Message):
 
 
 ######  Factura ########
-
-#Mensaje de Entrada y Salida para la base de datos Team
 class FacturaInput(messages.Message):
     token = messages.StringField(1, required=True)
-    tipoDePersona = messages.StringField(2)
-    nombre = messages.StringField(3)
-    """rfc = messages.StringField(4)
-    pais = messages.StringField(5)
-    colonia = messages.StringField(8)
-    cp = messages.StringField(9)
-    calle = messages.StringField(10)
-    numExt = messages.StringField(11)
-    numInt = messages.StringField(12)
-    email = messages.StringField(13)
-    numFolio = messages.StringField(14)
-    fecha = messages.StringField(15)
-    total = messages.StringField(16)"""
+    idTicket = messages.IntegerField(2, required=True)
+    tipoDePersona = messages.StringField(3, required=True)
+    nombre = messages.StringField(4, required=True)
+    rfc = messages.StringField(5, required=True)
+    pais = messages.StringField(6, required=True)
+    estado = messages.StringField(7, required=True)
+    municipio = messages.StringField(8, required=True)
+    colonia = messages.StringField(9, required=True)
+    cp = messages.IntegerField(10, required=True)
+    calle = messages.StringField(11, required=True)
+    numExt = messages.IntegerField(12, required=True)
+    numInt = messages.IntegerField(13)
+    email = messages.StringField(14, required=True)
+    numFolio = messages.IntegerField(15, required=True)
+    fecha = messages.StringField(16, required=True)
 
 
 class FacturaUpdate(messages.Message):
     token = messages.StringField(1, required=True)
     #empresa_key = messages.StringField(2, required=True)
     entityKey = messages.StringField(2, required=True)
-    tipoDePersona = messages.StringField(3)
-    nombre = messages.StringField(4)
-    """rfc = messages.StringField(5)
-    pais = messages.StringField(6)
-    estado = messages.StringField(7)
-    municipio = messages.StringField(8)
-    colonia = messages.StringField(9)
-    cp = messages.StringField(10)
-    calle = messages.StringField(11)
-    numExt = messages.StringField(12)
-    numInt = messages.StringField(13)
-    email = messages.StringField(14)
-    numFolio = messages.StringField(15)
-    fecha = messages.StringField(16)
-    total = messages.StringField(17)"""
+    tipoDePersona = messages.StringField(3, required=True)
+    nombre = messages.StringField(4, required=True)
+    rfc = messages.StringField(5, required=True)
+    pais = messages.StringField(6, required=True)
+    estado = messages.StringField(7, required=True)
+    municipio = messages.StringField(8, required=True)
+    colonia = messages.StringField(9, required=True)
+    cp = messages.IntegerField(10, required=True)
+    calle = messages.StringField(11, required=True)
+    numExt = messages.IntegerField(12, required=True)
+    numInt = messages.IntegerField(13)
+    email = messages.StringField(14, required=True)
+    numFolio = messages.IntegerField(15, required=True)
+    fecha = messages.StringField(16, required=True)
+    idTicket = messages.IntegerField(17, required=True)
 
 class FacturaList(messages.Message):
     code = messages.IntegerField(1)
-#regresa mensaje de lo ocurrido
-#mensaje de tipo MENSAJEFIED que regresa una lista de tipo TeamUpdate
-#es necesario el repeated para que sea lista
     data = messages.MessageField(FacturaUpdate, 2, repeated=True)
+
+######  Ticket ########
+class TicketInput(messages.Message):
+    token = messages.StringField(1, required=True)
+    folio = messages.IntegerField(3, required=True)
+    fecha = messages.StringField(4, required=True)
+    total = messages.FloatField(5, required=True)
+    items = messages.StringField(6, required=True)
+    qty = messages.IntegerField(7, required=True)
+    facturado = messages.StringField(8, required=True)
+
+
+class TicketUpdate(messages.Message):
+    #entityKey = messages.StringField(2, required=True)
+    token = messages.StringField(1, required=True)
+    entityKey = messages.StringField(2, required=True)
+    folio = messages.IntegerField(3, required=True)
+    fecha = messages.StringField(4, required=True)
+    total = messages.FloatField(5, required=True)
+    items = messages.StringField(6, required=True)
+    qty = messages.IntegerField(7, required=True)
+    facturado = messages.StringField(8, required=True)
+
+class TicketList(messages.Message):
+    code = messages.IntegerField(1)
+    data = messages.MessageField(TicketUpdate, 2, repeated=True)
