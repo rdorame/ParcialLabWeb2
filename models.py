@@ -18,11 +18,12 @@ class CustomBaseModel(EndpointsModel):
 
 ## empresa
 class Empresa(CustomBaseModel):
-    _message_fields_schema = ('entityKey', 'codigo_empresa', 'nombre_empresa', 'lat_empresa', 'long_empresa')
+    _message_fields_schema = ('entityKey', 'codigo_empresa', 'nombre_empresa', 'lat_empresa', 'long_empresa', 'logo_empresa')
     codigo_empresa = ndb.StringProperty()
     nombre_empresa = ndb.StringProperty()
     lat_empresa = ndb.FloatProperty()
     long_empresa = ndb.FloatProperty()
+    logo_empresa = ndb.StringProperty()
 
        ###Empresa####
     def empresa_m(self, data):
@@ -37,12 +38,13 @@ class Empresa(CustomBaseModel):
 #####USUARIOS#########
 
 class Usuarios(CustomBaseModel):
-    _message_fields_schema = ('entityKey', 'email', 'password', 'salt')
+    _message_fields_schema = ('entityKey', 'email', 'password', 'salt', 'codigo_empresa')
 
     empresa_key = ndb.KeyProperty(kind=Empresa)
     email = ndb.StringProperty()
     password = ndb.StringProperty()
     salt = ndb.StringProperty(indexed=False)
+    codigo_empresa = ndb.StringProperty()
 
 
     def hash_password(self):

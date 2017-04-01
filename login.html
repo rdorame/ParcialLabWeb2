@@ -1,65 +1,245 @@
 <html>
 
 <head>
- <title>
-   login demo
- </title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
 
-<script>
-// contact
-function LoginObject(myEmail, myPasswd) {
-    this.email = myEmail;
-    this.password = myPasswd;
-    this.toJsonString = function () { return JSON.stringify(this); };
+    <!-- Google web font
+   ================================================== -->
+    <link href='https://fonts.googleapis.com/css?family=Montserrat:700,400' rel='stylesheet' type='text/css'>
 
-};
+    <title>
+        Login
+    </title>
 
-function loginDemo()
-{
-	//alert("testing...")
-	var myData = new LoginObject(
-    $("#email").val(), 
-    $("#passwd").val());
-	
-  alert(myData.toJsonString());
+    <style>
+        @import url(http://fonts.googleapis.com/css?family=Exo:100,200,400);
+        @import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro:700,400,300);
+        body {
+            margin: 0;
+            padding: 0;
+            background: #fff;
+            color: #fff;
+            font-family: Arial;
+            font-size: 12px;
+        }
 
-	 jQuery.ajax({
-         type: "POST",
-         url: "http://localhost:8080/_ah/api/usuarios_api/v1/users/login",
-         data: myData.toJsonString(),
-         contentType: "application/json; charset=utf-8",
-         dataType: "json",
-         success: function (response) {
-              // do something
-              sessionStorage.token = response.token;
-              alert ("token generado: " + sessionStorage.token);
-              window.location = "/admin";
+        .body {
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            right: -40px;
+            bottom: -40px;
+            width: auto;
+            height: auto;
+            background-image: url(https://www.just-wp-it.com/wp-content/uploads/2016/03/solid-color-blue-background.jpg);
+            background-size: cover;
+            -webkit-filter: blur(5px);
+            z-index: 0;
+        }
 
-         },
-     
-         error: function (error) {            
-              // error handler
-              alert(error)
-         }
+        .grad {
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            right: -40px;
+            bottom: -40px;
+            width: auto;
+            height: auto;
+            background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(0, 0, 0, 0)), color-stop(100%, rgba(0, 0, 0, 0.65)));
+            /* Chrome,Safari4+ */
+            z-index: 1;
+            opacity: 0.7;
+        }
 
-     });
+        .header {
+            position: absolute;
+            top: calc(50% - 35px);
+            left: calc(50% - 400px);
+            z-index: 2;
+        }
 
-}
+        .header div {
+            float: left;
+            color: #fff;
+            font-family: 'Exo', sans-serif;
+            font-size: 35px;
+            font-weight: 200;
+        }
 
-</script>
+        .header div span {
+            color: #5379fa !important;
+        }
+
+        .login {
+            position: absolute;
+            top: calc(50% - 75px);
+            left: calc(50% - 50px);
+            height: 150px;
+            width: 350px;
+            padding: 10px;
+            z-index: 2;
+        }
+
+        .login input[type=text] {
+            width: 250px;
+            height: 30px;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: 2px;
+            color: #fff;
+            font-family: 'Exo', sans-serif;
+            font-size: 16px;
+            font-weight: 400;
+            padding: 4px;
+        }
+
+        .login input[type=password] {
+            width: 250px;
+            height: 30px;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: 2px;
+            color: #fff;
+            font-family: 'Exo', sans-serif;
+            font-size: 16px;
+            font-weight: 400;
+            padding: 4px;
+            margin-top: 10px;
+        }
+
+        .login input[type=button] {
+            width: 260px;
+            height: 35px;
+            background: #fff;
+            border: 1px solid #fff;
+            cursor: pointer;
+            border-radius: 2px;
+            color: #a18d6c;
+            font-family: 'Exo', sans-serif;
+            font-size: 16px;
+            font-weight: 400;
+            padding: 6px;
+            margin-top: 10px;
+        }
+
+        .login input[type=button]:hover {
+            opacity: 0.8;
+        }
+
+        .login input[type=button]:active {
+            opacity: 0.6;
+        }
+
+        .login input[type=text]:focus {
+            outline: none;
+            border: 1px solid rgba(255, 255, 255, 0.9);
+        }
+
+        .login input[type=password]:focus {
+            outline: none;
+            border: 1px solid rgba(255, 255, 255, 0.9);
+        }
+
+        .login input[type=button]:focus {
+            outline: none;
+        }
+
+        ::-webkit-input-placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        ::-moz-input-placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+    </style>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
+
+
+    <script>
+        // contact
+        function LoginObject(myEmail, myPasswd) {
+            this.email = myEmail;
+            this.password = myPasswd;
+            this.toJsonString = function() {
+                return JSON.stringify(this);
+            };
+
+        };
+
+        function loginDemo() {
+            //alert("testing...")
+            var myData = new LoginObject(
+                $("#email").val(),
+                $("#passwd").val());
+
+            alert(myData.toJsonString());
+
+            jQuery.ajax({
+                type: "POST",
+                url: "http://localhost:8080/_ah/api/usuarios_api/v1/users/login",
+                data: myData.toJsonString(),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function(response) {
+                    // do something
+                    sessionStorage.token = response.token;
+                    alert("token generado: " + sessionStorage.token);
+                    window.location = "/admin";
+
+                },
+
+                error: function(error) {
+                    // error handler
+                    alert(error)
+                }
+
+            });
+
+        }
+    </script>
 
 </head>
-<body>
 
-<h1> Login demo</h1>
+<body style="margin: 0; 	padding: 0; 	background: #fff; 	color: #fff; 	font-family: Arial; font-size: 12px;">
 
-email: <input type="text" id="email" value="root@kubeet.com" />
+    <!--<h1> Login</h1>
+    <div class="login">
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="text" id="email" value="" />
+        </div>
 
-<br>
-password: <input type="text" id="passwd" value="docker"/>
-<br>
-<button onclick="loginDemo()"> login Demo </button> 
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="text" id="passwd" value="docker" />
+        </div>
+        <br>
+        <button class="btn btn-primary" onclick="loginDemo()"> Acceder </button>
+    </div>-->
+
+    <div class="body"></div>
+		<div class="grad"></div>
+		<div class="header">
+			<div>Facturitas<span>Locas</span></div>
+		</div>
+		<br>
+		<div class="login">
+				<input type="text" placeholder="username"  id="email" value="root@kubeet.com" name="user"><br>
+				<input type="password" placeholder="password" id="passwd" value="docker" name="password"><br><br>
+				<button class="btn btn-primary" onclick="loginDemo()"> Acceder </button>
+		</div>
+  <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
 </body>
+
 </html>

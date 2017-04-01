@@ -25,18 +25,20 @@ class EmailPasswordMessage(messages.Message):
 
 #USERS
 class UserInput(messages.Message):
-    token = messages.StringField(1)
-    empresa_key = messages.StringField(2)
-    email = messages.StringField(3)
-    password = messages.StringField(4)
+    token = messages.StringField(1, required=True)
+    #empresa_key = messages.StringField(2, required=True)
+    email = messages.StringField(2, required=True)
+    password = messages.StringField(3, required=True)
+    codigo_empresa  = messages.StringField(4, required=True)
 
 
 
 class UserUpdate(messages.Message):
-    token = messages.StringField(1)
-    email = messages.StringField(2)
+    token = messages.StringField(1, required=True)
+    email = messages.StringField(2, required=True)
     password = messages.StringField(3)
     entityKey = messages.StringField(4, required=True)
+    codigo_empresa = messages.StringField(5)
 
 class UserList(messages.Message):
     code = messages.IntegerField(1)
@@ -47,20 +49,21 @@ class UserList(messages.Message):
 
 #Mensaje de Entrada y Salida para la base de datos Empresa
 class EmpresaInput(messages.Message):
-    token = messages.StringField(1, required=True)
-    codigo_empresa = messages.StringField(2)
-
-    nombre_empresa = messages.StringField(3)
-    lat_empresa = messages.FloatField(4)
-    long_empresa = messages.FloatField(5)
+    token = messages.StringField(1)
+    codigo_empresa = messages.StringField(2, required=True)
+    nombre_empresa = messages.StringField(3, required=True)
+    lat_empresa = messages.FloatField(4, required=True)
+    long_empresa = messages.FloatField(5, required=True)
+    logo_empresa = messages.StringField(6)
 
 class EmpresaUpdate(messages.Message):
-    token = messages.StringField(1, required=True)
+    token = messages.StringField(1)
     entityKey = messages.StringField(2, required=True)
-    codigo_empresa = messages.StringField(3)
-    nombre_empresa = messages.StringField(4)
+    codigo_empresa = messages.StringField(3, required=True)
+    nombre_empresa = messages.StringField(4, required=True)
     lat_empresa = messages.FloatField(5)
     long_empresa = messages.FloatField(6)
+    logo_empresa = messages.StringField(7)
 
 
 
@@ -173,13 +176,13 @@ class TicketInput(messages.Message):
 class TicketUpdate(messages.Message):
     #entityKey = messages.StringField(2, required=True)
     token = messages.StringField(1, required=True)
-    entityKey = messages.StringField(2, required=True)
+    entityKey = messages.StringField(2)
     folio = messages.IntegerField(3, required=True)
     fecha = messages.StringField(4, required=True)
     total = messages.FloatField(5, required=True)
     items = messages.StringField(6, required=True)
     qty = messages.IntegerField(7, required=True)
-    facturado = messages.StringField(8, required=True)
+    facturado = messages.StringField(8)
 
 class TicketList(messages.Message):
     code = messages.IntegerField(1)

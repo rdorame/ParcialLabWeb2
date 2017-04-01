@@ -17,6 +17,7 @@
    ================================================== -->
 	<link rel="stylesheet" href="css/bootstrap.min.css">
 
+
 	<!-- Animate CSS
    ================================================== -->
 	<link rel="stylesheet" href="css/animate.min.css">
@@ -49,7 +50,7 @@
 			jQuery.support.cors = true;
 			try {
 				$.ajax({
-					url: "https://helloworld-158821.appspot.com/getteam",
+					url: "http://localhost:8080/getteam",
 					dataType: 'json',
 					cache: false,
 					contentType: false,
@@ -83,6 +84,8 @@
 			}
 		}
 	</script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
 
 </head>
 
@@ -123,6 +126,7 @@
 					<li><a href="#price" class="smoothScroll">Paquetes</a></li>
 					<li><a href="#empresas" class="smoothScroll">Empresas</a></li>
 					<li><a href="#contact" class="smoothScroll">Contacto</a></li>
+					<li><a href="login">Acceso</a></li>
 				</ul>
 			</div>
 
@@ -504,20 +508,75 @@
 			</div>
 			<div id="map"></div>
 			<script>
+				var marker;
+
+				function TokenObject() {
+					this.tokenint = sessionStorage.token;
+					this.toJsonString = function() {
+						return JSON.stringify(this);
+					};
+
+				};
+
 				function initMap() {
 					// Create a map object and specify the DOM element for display.
 					var map = new google.maps.Map(document.getElementById('map'), {
 						center: {
-							lat: -25.363,
-							lng: 131.044
+							lat: 19.0413,
+							lng: -98.2062
 						},
 						scrollwheel: true,
-						zoom: 8
+						zoom: 13
 					});
+
+					try {
+						var myData = new TokenObject();
+
+						jQuery.ajax({
+							type: "POST",
+							url: "http://localhost:8080/_ah/api/empresas_api/v1/empresa/list",
+							data: myData.toJsonString(),
+							contentType: "application/json; charset=utf-8",
+							dataType: "json",
+
+							success: function(response) {
+								//console.log(response.data.each);
+								var trHTML = '';
+								response.data.forEach(function(obj) {
+									var myLatLng = {
+										lat: obj.lat_empresa,
+										lng: obj.long_empresa
+									};
+
+									var contentString = '<h1 style="color:black">' + obj.nombre_empresa + '</div>';
+
+									var infowindow = new google.maps.InfoWindow({
+										content: contentString
+									});
+
+									marker = new google.maps.Marker({
+										position: myLatLng,
+										map: map,
+										animation: google.maps.Animation.DROP,
+										title: obj.nombre_empresa
+									});
+									marker.addListener('click', function() {
+										infowindow.open(map, marker);
+									});
+
+								});
+							},
+							error: function(error) {
+								// error handler
+								alert("error :" + error.message)
+							}
+						});
+					} catch (error) {
+						alert(error);
+					}
 				}
 			</script>
 			<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDSQzdgv2Q3hIA9cUGwZhwBdGZJNO62fMc&callback=initMap" async defer></script>
-
 		</div>
 	</section>
 
@@ -537,111 +596,127 @@
 
 				<!-- Contact form section
 			================================================== -->
-				<div class="col-md-offset-2 col-md-8 col-sm-offset-1 col-sm-10 wow fadeIn" data-wow-delay="0.6s">
-					<div class="contact-form">
-						<form id="contact-form" method="post" action="contact.php">
-							<div class="col-md-6 col-sm-6">
-								<input name="name" type="text" class="form-control" placeholder="Nombre" required>
-								<input name="email" type="email" class="form-control" placeholder="Correo electrónico" required>
+				<section id="contact" class="parallax-section">
+					<div class="container">
+						<div class="row">
+
+							<!-- Section title
+		================================================== -->
+							<div class="col-md-12 col-sm-12 text-center">
+								<div class="section-title">
+									<h5>Contacto</h5>
+								</div>
 							</div>
-							<div class="col-md-6 col-sm-6">
-								<textarea name="message" class="form-control" placeholder="Mensaje" rows="4" required></textarea>
+
+							<!-- Contact form section
+		================================================== -->
+							<div class="col-md-offset-2 col-md-8 col-sm-offset-1 col-sm-10 wow fadeIn" data-wow-delay="0.6s">
+								<div class="contact-form">
+									<form id="contact-form" method="post" action="contact.php">
+										<div class="col-md-6 col-sm-6">
+											<input name="name" type="text" class="form-control" placeholder="Nombre" required>
+											<input name="email" type="email" class="form-control" placeholder="Correo electrónico" required>
+										</div>
+										<div class="col-md-6 col-sm-6">
+											<textarea name="message" class="form-control" placeholder="Mensaje" rows="4" required></textarea>
+										</div>
+										<div class="col-md-offset-3 col-md-6 col-sm-offset-3 col-sm-6">
+											<p><a href="send_message" class="form-control submit">Send email.</a></p>
+										</div>
+									</form>
+								</div>
 							</div>
-							<div class="col-md-offset-3 col-md-6 col-sm-offset-3 col-sm-6">
-								<input type="submit" class="form-control submit" value="Enviar">
-							</div>
-						</form>
-					</div>
-				</div>
-			</div>
-			<div class="col-md-12 col-sm-12"></div>
-			<!-- Contact detail section
+						</div>
+
+
+						<div class="col-md-12 col-sm-12"></div>
+						<!-- Contact detail section
 			================================================== -->
-			<div class="col-md-offset-2 col-md-3 col-sm-4 wow fadeInUp" data-wow-delay="0.6s">
-				<div class="media">
-					<div class="media-object pull-left">
-						<i class="icon icon-phone"></i>
-					</div>
-					<div class="media-body">
-						<h3 class="media-heading">Teléfono</h3>
-						<p> + 52 1 222 222 22 22</p>
-					</div>
-				</div>
-			</div>
-			<div class="col-md-3 col-sm-4 wow fadeInUp" data-wow-delay="0.6s">
-				<div class="media">
-					<div class="media-object pull-left">
-						<i class="icon icon-envelope"></i>
-					</div>
-					<div class="media-body">
-						<h3 class="media-heading">Correo electrónico</h3>
-						<p> contacto@rr.com</p>
-					</div>
-				</div>
-			</div>
-			<div class="col-md-3 col-sm-4 wow fadeInUp" data-wow-delay="0.6s">
-				<div class="media">
-					<div class="media-object pull-left">
-						<i class="icon icon-browser"></i>
-					</div>
-					<div class="media-body">
-						<h3 class="media-heading">Dirección</h3>
-						<p> Puebla, Pue.</p>
-					</div>
-				</div>
-			</div>
+						<div class="col-md-offset-2 col-md-3 col-sm-4 wow fadeInUp" data-wow-delay="0.6s">
+							<div class="media">
+								<div class="media-object pull-left">
+									<i class="icon icon-phone"></i>
+								</div>
+								<div class="media-body">
+									<h3 class="media-heading">Teléfono</h3>
+									<p> + 52 1 222 222 22 22</p>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-3 col-sm-4 wow fadeInUp" data-wow-delay="0.6s">
+							<div class="media">
+								<div class="media-object pull-left">
+									<i class="icon icon-envelope"></i>
+								</div>
+								<div class="media-body">
+									<h3 class="media-heading">Correo electrónico</h3>
+									<p> contacto@rr.com</p>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-3 col-sm-4 wow fadeInUp" data-wow-delay="0.6s">
+							<div class="media">
+								<div class="media-object pull-left">
+									<i class="icon icon-browser"></i>
+								</div>
+								<div class="media-body">
+									<h3 class="media-heading">Dirección</h3>
+									<p> Puebla, Pue.</p>
+								</div>
+							</div>
+						</div>
 
-		</div>
-		</div>
-	</section>
+					</div>
+			</div>
+			</section>
 
 
-	<!-- Footer section
+			<!-- Footer section
 ================================================== -->
 
-	<!-- copyright section
+			<!-- copyright section
 ================================================== -->
-	<section id="copyright">
-		<div class="container">
-			<div class="row">
+			<section id="copyright">
+				<div class="container">
+					<div class="row">
 
-				<div class="col-md-12 col-sm-12">
-					<div class="copyright-text wow fadeInUp" data-wow-delay="0.9s">
-						<ul class="social-icon">
-							<li>
-								<a href="#" class="fa fa-facebook wow fadeIn" data-wow-delay="0.3s"></a>
-							</li>
-							<li>
-								<a href="#" class="fa fa-twitter wow fadeIn" data-wow-delay="0.6s"></a>
-							</li>
-							<li>
-								<a href="#" class="fa fa-dribbble wow fadeIn" data-wow-delay="0.9s"></a>
-							</li>
-							<li>
-								<a href="#" class="fa fa-behance wow fadeIn" data-wow-delay="1s"></a>
-							</li>
-						</ul>
-						<p> &copy; 2017 | R & R - Todos los derechos están reservados.</p>
+						<div class="col-md-12 col-sm-12">
+							<div class="copyright-text wow fadeInUp" data-wow-delay="0.9s">
+								<ul class="social-icon">
+									<li>
+										<a href="#" class="fa fa-facebook wow fadeIn" data-wow-delay="0.3s"></a>
+									</li>
+									<li>
+										<a href="#" class="fa fa-twitter wow fadeIn" data-wow-delay="0.6s"></a>
+									</li>
+									<li>
+										<a href="#" class="fa fa-dribbble wow fadeIn" data-wow-delay="0.9s"></a>
+									</li>
+									<li>
+										<a href="#" class="fa fa-behance wow fadeIn" data-wow-delay="1s"></a>
+									</li>
+								</ul>
+								<p> &copy; 2017 | R & R - Todos los derechos están reservados.</p>
+							</div>
+						</div>
+
 					</div>
 				</div>
-
-			</div>
-		</div>
-	</section>
+			</section>
 
 
-	<!-- Javascript
+			<!-- Javascript
 ================================================== -->
-	<script src="js/jquery.js"></script>
-	<script src="js/bootstrap.min.js"></script>
-	<script src="js/jquery.nav.js"></script>
-	<script src="js/jquery.parallax.js"></script>
-	<script src="js/nivo-lightbox.min.js"></script>
-	<script src="js/counter.js"></script>
-	<script src="js/smoothscroll.js"></script>
-	<script src="js/owl.carousel.min.js"></script>
-	<script src="js/wow.min.js"></script>
-	<script src="js/custom.js"></script>
+			<script src="js/jquery.js"></script>
+			<script src="js/bootstrap.min.js"></script>
+			<script src="js/jquery.nav.js"></script>
+			<script src="js/jquery.parallax.js"></script>
+			<script src="js/nivo-lightbox.min.js"></script>
+			<script src="js/counter.js"></script>
+			<script src="js/smoothscroll.js"></script>
+			<script src="js/owl.carousel.min.js"></script>
+			<script src="js/wow.min.js"></script>
+			<script src="js/custom.js"></script>
 
 
 </body>

@@ -1,3 +1,5 @@
+@import url(http://fonts.googleapis.com/css?family=Exo:100,200,400);
+@import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro:700,400,300);
 
 body {
 		background: #ffffff;
@@ -23,6 +25,8 @@ h1 {
   font-size: 16px;
   line-height: 26px;
 }
+
+
 
 #home h1 {
   letter-spacing: 4px;
@@ -106,11 +110,29 @@ p {
 
 #map {
 	height: 300px;
-	width: 70%;
+	width: 100%;
 	float: right;
 }
 #team .col-md-3, #price {
   text-align: center;
+}
+
+div.scrollmenu {
+    background-color: #333;
+    overflow: auto;
+    white-space: nowrap;
+}
+
+div.scrollmenu a {
+    display: inline-block;
+    color: white;
+    text-align: center;
+    padding: 14px;
+    text-decoration: none;
+}
+
+div.scrollmenu a:hover {
+    background-color: #777;
 }
 
 .parallax-section {

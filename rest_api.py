@@ -38,6 +38,7 @@ class UsuariosApi(remote.Service):
    lstMessage = UserList(code=1) # crea objeto mensaje
    lista.append(UserUpdate(token='',
     entityKey= user.entityKey,
+    codigo_empresa = user.codigo_empresa,
     #empresa_key = user.empresa_key.urlsafe(),
     email = user.email))
    lstMessage.data = lista#ASIGNA a la salida la lista
@@ -63,7 +64,9 @@ class UsuariosApi(remote.Service):
     lista.append(UserUpdate(token='',
      entityKey=i.entityKey,
      #empresa_key=user.empresa_key.urlsafe(),
-     email=i.email)) # agrega a la lista
+     email=i.email,
+     codigo_empresa = i.codigo_empresa
+     )) # agrega a la lista
 
    lstMessage.data = lista # la manda al messa
    message = lstMessage #regresa
@@ -188,7 +191,8 @@ class EmpresasApi(remote.Service):
     codigo_empresa=empresaentity.get().codigo_empresa,
     nombre_empresa = empresaentity.get().nombre_empresa,
     lat_empresa = empresaentity.get().lat_empresa,
-    long_empresa = empresaentity.get().long_empresa
+    long_empresa = empresaentity.get().long_empresa,
+    logo_empresa = empresaentity.get().logo_empresa
     )])
 
   except jwt.DecodeError:
@@ -284,7 +288,9 @@ class EmpresasApi(remote.Service):
      codigo_empresa=i.codigo_empresa,
      nombre_empresa = i.nombre_empresa,
      lat_empresa = i.lat_empresa,
-     long_empresa = i.long_empresa))
+     long_empresa = i.long_empresa,
+     logo_empresa = i.logo_empresa
+     ))
 
    lstMessage.data = lista #ASIGNA a la salida la lista
    message = lstMessage
@@ -363,7 +369,8 @@ class TeamApi(remote.Service):
      #empresa_key=i.empresa_key.urlsafe(),
      nombre=i.nombre,
      puesto=i.puesto,
-     urlImage=i.urlImage))
+     urlImage=i.urlImage
+     ))
    lstMessage.data = lista #ASIGNA a la salida la lista
    message = lstMessage
   except jwt.DecodeError:

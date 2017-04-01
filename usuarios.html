@@ -1,0 +1,210 @@
+<html>
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+
+    <!-- Google web font
+  ================================================== -->
+    <link href='https://fonts.googleapis.com/css?family=Montserrat:700,400' rel='stylesheet' type='text/css'>
+    <title>
+        Registro de usuarios
+    </title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+    <script>
+        function UserObject(codigo_empresa, email, password) {
+            this.codigo_empresa = codigo_empresa;
+            this.email = email;
+            this.password = password;
+            this.token = sessionStorage.token;
+            this.toJsonString = function() {
+                return JSON.stringify(this);
+            };
+
+        };
+
+        function addUsersObject() {
+            if ($("#password").val() == $("#passwordR").val()) {
+                try {
+                    //alert("token : " + sessionStorage.token);
+
+
+
+
+                    var myData = new UserObject(
+                        $("#codigo_empresa").val(),
+                        $("#email").val(),
+                        $("#password").val()
+                    );
+                    //alert(myData.toJsonString());
+
+                    jQuery.ajax({
+                        type: "POST",
+                        url: "http://localhost:8080/_ah/api/usuarios_api/v1/users/insert",
+                        data: myData.toJsonString(),
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: function(response) {
+                            // do something
+                            alert(response.code + " " + response.message);
+                        },
+
+                        error: function(error) {
+                            // error handler
+                            alert("error :" + error.message)
+                        }
+
+                    });
+                } catch (error) {
+                    alert(error);
+                }
+            } else {
+                alert("La constraseñas no son iguales");
+            }
+        }
+
+
+        function TokenObject() {
+
+            this.tokenint = sessionStorage.token;
+            this.toJsonString = function() {
+                return JSON.stringify(this);
+            };
+
+        };
+
+        function deleteUser(){
+
+        }
+
+
+        function getUsersObjectList() {
+            try {
+                //alert("token : " + sessionStorage.token);
+
+                var myData = new TokenObject();
+
+                //alert(myData.toJsonString());
+
+                jQuery.ajax({
+                    type: "POST",
+                    url: "http://localhost:8080/_ah/api/usuarios_api/v1/users/list",
+                    data: myData.toJsonString(),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function(response) {
+                        var trHTML = '';
+                        response.data.forEach(function(obj) {
+                            //console.log(obj.nombre_empresa);
+                            trHTML += '<tr><td>' + obj.codigo_empresa + '</td><td>' + obj.email
+                            + '</td><td><button type="button" class="btn btn-warning">Editar</button><button type="button" class="btn btn-danger">Borrar</button></tr></tr>';
+                        });
+                        $('#usuarios').append(trHTML);
+                    },
+
+                    error: function(error) {
+                        // error handler
+                        alert("error :" + error.message)
+                    }
+
+                });
+
+            } catch (error) {
+                alert(error);
+            }
+
+        }
+
+        function uploadDemo()
+
+        {
+
+            var file_data = $("#uploaded_file").prop("files")[0];
+            var form_data = new FormData();
+            form_data.append("uploaded_file", file_data)
+
+            jQuery.support.cors = true;
+            try {
+                $.ajax({
+                    url: "http://localhost:8080/up",
+                    dataType: 'text',
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    data: form_data,
+                    type: 'post',
+                    crossDomain: true,
+                    success: function(response) {
+
+                        document.getElementById("preview").src = response;
+
+                        sessionStorage.urlImage = response;
+
+                        document.getElementById("url_photo").value = response;
+                    }
+                });
+            } catch (e) {
+                alert("error : " + e);
+            }
+        }
+    </script>
+
+</head>
+
+<body style="margin: 100px">
+
+
+    <div class="form" style="margin-left: 20%; margin-right: 20%">
+
+        <h1> Registro de usuarios</h1>
+
+        <div class="form-group">
+            <label for="">Código de la empresa</label>
+            <input type="text" id="codigo_empresa" value=""  /> <br>
+        </div>
+        <div class="form-group">
+            <label for="">Correo electronico</label>
+            <input type="text" id="email" value="" />
+        </div>
+        <div class="form-group">
+            <label for="">Contraseña</label>
+            <input type="password" id="password" value=""  />
+        </div>
+        <div class="form-group">
+            <label for="">Repite Contraseña</label>
+            <input type="password" id="passwordR" value=""  />
+        </div>
+        <br>
+        <button class="btn btn-success" onclick="addUsersObject()"> Registrar usuarios </button>
+
+        <br>
+        <br>
+
+        <button class="btn btn-info" onclick="getUsersObjectList()"> Obtener Lista </button>
+
+        <br><br>
+        <div class="table-responsive">
+
+            <table class="table" id="usuarios" border='1'>
+                <tr>
+                    <th>Código empresa</th>
+                    <th>Email</th>
+                    <th>Acciones</th>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+
+</body>
+
+</html>

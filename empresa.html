@@ -12,72 +12,49 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
 
     <!-- Google web font
-================================================== -->
+    ================================================== -->
     <link href='https://fonts.googleapis.com/css?family=Montserrat:700,400' rel='stylesheet' type='text/css'>
+
     <title>
-        Faturación
+        Registro de empresas
     </title>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 
     <script>
-        // contact
-        function FacturaObject(tipoDePersona, nombre, rfc, pais, estado, municipio, colonia, cp, calle, numExt, numInt, email, numFolio, fecha, idTicket) {
-            this.tipoDePersona = tipoDePersona;
-            this.nombre = nombre;
-            this.rfc = rfc;
-            this.pais = pais;
-            this.estado = estado;
-            this.municipio = municipio;
-            this.colonia = colonia;
-            this.cp = cp;
-            this.calle = calle;
-            this.numExt = numExt;
-            this.numInt = numInt;
-            this.email = email;
-            this.numFolio = numFolio;
-            this.fecha = fecha;
-            this.idTicket = idTicket;
+        function EmpresaObject(codigo_empresa, nombre_empresa, lat_empresa, long_empresa) {
+            this.codigo_empresa = codigo_empresa;
+            this.nombre_empresa = nombre_empresa;
+            this.lat_empresa = lat_empresa;
+            this.long_empresa = long_empresa;
             this.token = sessionStorage.token;
+            this.logo_empresa = sessionStorage.urlImage;
             this.toJsonString = function() {
                 return JSON.stringify(this);
             };
-
         };
 
-
-        function addFactura() {
+        function addEmpresa() {
             try {
                 //alert("token : " + sessionStorage.token);
 
-                var myData = new FacturaObject(
-                    $("#tipoDePersona").val(),
-                    $("#nombre").val(),
-                    $("#rfc").val(),
-                    $("#pais").val(),
-                    $("#estado").val(),
-                    $("#municipio").val(),
-                    $("#colonia").val(),
-                    $("#cp").val(),
-                    $("#calle").val(),
-                    $("#numExt").val(),
-                    $("#numInt").val(),
-                    $("#email").val(),
-                    $("#numFolio").val(),
-                    $("#fecha").val(),
-                    $("#idTicket").val()
+                var myData = new EmpresaObject(
+                    $("#codigo_empresa").val(),
+                    $("#nombre_empresa").val(),
+                    $("#lat_empresa").val(),
+                    $("#long_empresa").val()
                 );
                 //alert(myData.toJsonString());
 
                 jQuery.ajax({
                     type: "POST",
-                    url: "http://localhost:8080/_ah/api/factura_api/v1/factura/insert",
+                    url: "http://localhost:8080/_ah/api/empresas_api/v1/empresa/insert",
                     data: myData.toJsonString(),
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
                     success: function(response) {
                         // do something
-                        alert(response.code + " " + response.message);
+                      //  alert(response.code + " " + response.message);
                     },
 
                     error: function(error) {
@@ -92,9 +69,7 @@
 
         }
 
-
         function TokenObject() {
-
             this.tokenint = sessionStorage.token;
             this.toJsonString = function() {
                 return JSON.stringify(this);
@@ -102,35 +77,39 @@
 
         };
 
-
-        function getFacturaList() {
+        function getEmpresaList() {
             try {
+                //alert("token : " + sessionStorage.token);
                 var myData = new TokenObject();
+                //alert(myData.toJsonString());
+
                 jQuery.ajax({
                     type: "POST",
-                    url: "http://localhost:8080/_ah/api/factura_api/v1/factura/list",
+                    url: "http://localhost:8080/_ah/api/empresas_api/v1/empresa/list",
                     data: myData.toJsonString(),
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
+
                     success: function(response) {
+                        //console.log(response.data.each);
                         var trHTML = '';
                         response.data.forEach(function(obj) {
                             //console.log(obj.nombre_empresa);
-                            trHTML += '<tr><td>' + obj.numFolio + '</td><td>' + obj.idTicket + '</td><td>' + obj.fecha
-                            + '</td><td><button type="button" class="btn btn-warning">Editar</button><button type="button" class="btn btn-danger">Borrar</button></tr></tr>';
+                            trHTML += '<tr><td><img src="' +  obj.logo_empresa  +'" alt="Logo" style="width:64px;height:64px;"></td><td>'
+                             + obj.nombre_empresa + '</td><td>' + obj.codigo_empresa + '</td><td>' + obj.lat_empresa + '</td><td>' + obj.long_empresa
+                             + '</td><td><button type="button" class="btn btn-warning">Editar</button><button type="button" class="btn btn-danger">Borrar</button></tr></tr>';
                         });
-                        $('#facturas').append(trHTML);
+                        $('#empresas').append(trHTML);
                     },
-
                     error: function(error) {
                         // error handler
                         alert("error :" + error.message)
                     }
                 });
-
             } catch (error) {
                 alert(error);
             }
+
 
         }
 
@@ -158,6 +137,7 @@
                         document.getElementById("preview").src = response;
 
                         sessionStorage.urlImage = response;
+                        console.log(response);
 
                         document.getElementById("url_photo").value = response;
                     }
@@ -172,87 +152,59 @@
 
 <body style="margin: 100px">
 
+
     <div class="form" style="margin-left: 20%; margin-right: 20%">
-        <h1> Facturación</h1>
+        <h1> Registro de empresas</h1>
 
         <div class="form-group">
-            <label for="tip1o">Tipo de persona</label>
-            <input type="text" id="tipoDePersona" value="" /> <br>
+            <label for="codigo_empresa">Código de la empresa</label>
+            <input type="text" id="codigo_empresa" value="" /> <br>
+            </label>
         </div>
         <div class="form-group">
-            <label for="nomb1re">Nombre</label>
-            <input type="text" id="nombre" value="" />
+            <label for="nombre_empresa">Nombre de la empresa</label>
+            <input type="text" id="nombre_empresa" value="" />
+            </label>
         </div>
         <div class="form-group">
-            <label for="rfc1">R.F.C.</label>
-            <input type="text" id="rfc" value="" />
+            <label for="lat_empresa">Latitud de la empresa</label>
+            <input type="number" id="lat_empresa" value="" />
+            </label>
         </div>
         <div class="form-group">
-            <label for="pais1">Pais</label>
-            <input type="text" id="pais" value="" />
-        </div>
-        <div class="form-group">
-            <label for="estad1o">Estado</label>
-            <input type="text" id="estado" value="" />
-        </div>
-        <div class="form-group">
-            <label for="muni1cipio">municipio</label>
-            <input type="text" id="municipio" value="" />
-        </div>
-        <div class="form-group">
-            <label for="col1onia">Colonia</label>
-            <input type="text" id="colonia" value="" />
-        </div>
-        <div class="form-group">
-            <label for="cp1">Cp</label>
-            <input type="number" id="cp" value="" />
-        </div>
-        <div class="form-group">
-            <label for="call1">Calle</label>
-            <input type="text" id="calle" value="" />
-        </div>
-        <div class="form-group">
-            <label for="num1">Numero exterior</label>
-            <input type="number" id="numExt" value="" />
-        </div>
-        <div class="form-group">
-            <label for="numI1nt">Numero interior</label>
-            <input type="number" id="numInt" value="" />
-        </div>
-        <div class="form-group">
-            <label for="email1">Correo</label>
-            <input type="email" id="email" value="" />
-        </div>
-        <div class="form-group">
-            <label for="folio1">Folio</label>
-            <input type="number" id="numFolio" value="" />
-        </div>
-        <div class="form-group">
-            <label for="qty1">Fecha</label>
-            <input type="date" id="fecha" value="" />
-        </div>
-        <div class="form-group">
-            <label for="qty1">No. Ticket</label>
-            <input type="number" id="idTicket" value="" />
+            <label for="long_empresa">Longitud de la empresa</label>
+            <input type="number" id="long_empresa" value="" />
+            </label>
         </div>
 
+        <div class="form-group">
+            <img src="" alt="Logo" id="preview" style="width:128px;height:128px;">
+            <br>
+        </div>
+        <div class="form-group">
+            <input type="text" id="url_photo">
+            <input onchange="uploadDemo()" type="file" id="uploaded_file" name="uploaded_file">
+        </div>
 
         <br>
-        <button class="btn btn-success" onclick="addFactura()"> Guardar factura </button>
+        <button class="btn btn-success" onclick="addEmpresa()"> Registrar empresa </button>
 
         <br>
         <br>
 
-        <button class="btn btn-info" onclick="getFacturaList()"> Obtener Lista </button>
-
+        <button class="btn btn-info" onclick="getEmpresaList()"> Obtener Lista </button>
         <br><br>
+
+
         <div class="table-responsive">
 
-            <table class="table" id="facturas" border='1'>
+            <table class="table" id="empresas" border='1'>
                 <tr>
-                    <th>Folio</th>
-                    <th>No. Ticket</th>
-                    <th>Fecha</th>
+                    <th>Logo</th>
+                    <th>Empresa</th>
+                    <th>Código</th>
+                    <th>Latitud</th>
+                    <th>Longitud</th>
                     <th>Acciones</th>
                 </tr>
             </table>
